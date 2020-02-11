@@ -19,7 +19,7 @@ const express = require("express"),
     AWS_SECRET_ACCESS_KEY
   } = process.env,
   app = express();
-  app.use( express.static( `${__dirname}/../build` ) );
+  app.use( express.static( `${__dirname}/../../build` ) );
 app.use(express.json());
 io = socket(
   app.listen(SERVER_PORT, () =>
