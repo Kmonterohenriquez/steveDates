@@ -12,8 +12,8 @@ const AddPhotos = props => {
 	const [img4, setImg4] = useState('');
 	const [img5, setImg5] = useState('');
 	const [img6, setImg6] = useState('');
-	const [btnActive, setBtnActive] = useState(true);
-	const [alert, setAlert] = useState(false);
+	// const [btnActive, setBtnActive] = useState(true);
+	// const [alert, setAlert] = useState(false);
 
 	let getUserPhotos = () => {
 		axios
@@ -35,24 +35,25 @@ const AddPhotos = props => {
 
 	useEffect(() => {
 		getUserPhotos();
-	}, []);
+	});
 
-	useEffect(() => {
-		handleBtnActive();
-		console.log('image: ', img2);
-	}, [profileImg,img2, img3, img4, img5, img6]);
+	// useEffect(() => {
+	// 	handleBtnActive();
+	// 	// console.log('image: ', img2);
+	// },[])
+	// }, [profileImg,img2, img3, img4, img5, img6]);
 
 	const addUserPhotos = () => {
-		if (!btnActive) {
+		// if (!btnActive) {
 			props.history.push('/');
 				axios
 					.put('/api/photos', { profileImg, img2, img3, img4, img5, img6 })
 					.then(() => {
 						props.history.push('/swipe');
 					});
-		} else {
-			setAlert(true);
-		}
+		// } else {
+		// 	setAlert(true);
+		// }
 	};
 	// === === === AMAZON S3 === === === //
 	let getSignedRequest = ([file]) => {
@@ -113,20 +114,20 @@ const AddPhotos = props => {
 	// 	props.history.push('/');
 	// };
 
-	const handleBtnActive = () => {
-		if (
-			profileImg === '' &&
-			img2 === '' &&
-			img3 === '' &&
-			img4 === '' &&
-			img5 === '' &&
-			img6 === ''
-		) {
-			setBtnActive(true);
-		} else {
-			setBtnActive(false);
-		}
-	};
+	// const handleBtnActive = () => {
+	// 	if (
+	// 		profileImg === '' &&
+	// 		img2 === '' &&
+	// 		img3 === '' &&
+	// 		img4 === '' &&
+	// 		img5 === '' &&
+	// 		img6 === ''
+	// 	) {
+	// 		setBtnActive(true);
+	// 	} else {
+	// 		setBtnActive(false);
+	// 	}
+	// };
 	// console.clear();
 	console.log('Alert is: ', alert);
 	console.log('image', profileImg, img2, img3, img4, img5, img6);

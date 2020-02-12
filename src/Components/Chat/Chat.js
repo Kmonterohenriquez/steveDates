@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import receiver_pic from '../../img/kevin_1.jpg';
+// import receiver_pic from '../../img/kevin_1.jpg';
 // import sender_pic from '../../img/kevin_2.jpg';
 import { Link, withRouter } from 'react-router-dom';
 import io from 'socket.io-client';
