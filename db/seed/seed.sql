@@ -26,7 +26,7 @@ users_first_name varchar(50),
 users_phone_number int,
 users_working boolean,
 users_phone_number_current varchar(11),
-users_activities text []
+users_activities text
 );
 
 create table swipes (
@@ -41,7 +41,7 @@ create table matched_users (
 chat_id serial primary key,
 user_one int references users(users_id),
 user_two int references users(users_id),
-friend_zone boolean;
+friend_zone boolean
 );
 
 create table activity (
@@ -80,7 +80,7 @@ match boolean
 );
 
 --views
-create view users_profile_activities as 
-select a.*, b.activity_id, c.activity_name from users_profile a 
-join users_activities b on a.users_id = b.users_id
-join activity c on c.activity_id = b.activity_id;
+-- create view users_profile_activities as 
+-- select a.*, b.activity_id, c.activity_name from users_profile a 
+-- join users_activities b on a.users_id = b.users_id
+-- join activity c on c.activity_id = b.activity_id;
