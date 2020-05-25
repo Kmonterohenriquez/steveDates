@@ -21,11 +21,11 @@ const express = require("express"),
   app = express();
   app.use( express.static( `${__dirname}/../build` ) );
 app.use(express.json());
-io = socket(
-  app.listen(SERVER_PORT, () =>
-    console.log(gradient.fruit(`Server running on git ${SERVER_PORT}`))
-  )
-);
+// io = socket(
+//   app.listen(SERVER_PORT, () =>
+//     console.log(gradient.fruit(`Server running on git ${SERVER_PORT}`))
+//   )
+// );
 app.use(
   session({
     resave: false,
