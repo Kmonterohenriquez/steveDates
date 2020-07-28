@@ -142,5 +142,5 @@ app.get("/api/currentReceiver/:users_id", matchCtrl.getCurrentReceiver);
 app.get("/api/chats/:chat_id", matchCtrl.getChats);
 // const port = 4040;
 
-const port = SERVER_PORT || 5000;
+const port = SERVER_PORT;
 app.listen(port, () => console.log(`Server running on port ${port}`));
