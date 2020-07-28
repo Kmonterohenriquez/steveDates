@@ -20,6 +20,7 @@ const express = require("express"),
   } = process.env,
   app = express();
 app.use(express.json());
+app.use(express.static(__dirname + '/public' ));
 app.use(express.static(`${__dirname}/../build`));
 // io = socket(
 //   app.listen(SERVER_PORT, () =>
