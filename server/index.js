@@ -16,105 +16,105 @@ const express = require("express"),
     SESSION_SECRET,
     S3_BUCKET,
     AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY
+    AWS_SECRET_ACCESS_KEY,
   } = process.env,
   app = express();
-  app.use(express.json());
-  app.use(express.static( `${__dirname}/../build` ) );
-io = socket(
-  app.listen(SERVER_PORT, () =>
-    console.log(gradient.fruit(`Server running on git ${SERVER_PORT}`))
-  )
-);
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: true,
-    secret: SESSION_SECRET,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 30
-    }
-  })
-);
-//=========== AMAZON S3 =========== //
-app.get("/sign-s3", (req, res) => {
-  aws.config = {
-    region: "us-west-1",
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY
-  };
-  const s3 = new aws.S3();
-  const fileName = req.query["file-name"];
-  const fileType = req.query["file-type"];
-  const s3Params = {
-    Bucket: S3_BUCKET,
-    Key: fileName,
-    Expires: 60,
-    ContentType: fileType,
-    ACL: "public-read"
-  };
-  s3.getSignedUrl("putObject", s3Params, (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.end();
-    }
-    const returnData = {
-      signedRequest: data,
-      url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
-    };
-    return res.send(returnData);
-  });
-});
-// ============= S3 END =============== //
-// ========= SOCKET.IO START ========== //
-// REGULAR ENDPOINTS HERE
-app.get("/api/example", (req, res, next) => {
-  res.status(200).send("hello");
-});
-io.on("connection", socket => {
-  console.log("User Connected");
-  socket.on("join room", async data => {
-    console.log("join room", data);
-    const { room } = data;
-    const db = app.get("db");
-    console.log("Room joined", room);
-    let existingRoom = await db.chat.check_match(+room);
-    // HOW DO I CREATE ROOM FROM MATCH? //
-    // !existingRoom.length ? db.chat.create_room({ match_id: +room }) : null;
-    let messages = await db.chat.get_chat_history( +room);
-    socket.join(+room);
-    console.log(room);
-    io.to(+room).emit("room joined", messages);
-  });
-  socket.on("message sent", async data => {
-    console.log("message sent", data);
-    //USER_ID IS SENDER//
-    const { room, message, sender} = data;
-    //destructure and put proper values in and it should work
-    // console.log('Room', room)
-    // const db = req.app.get('db')
-    // const {users_id} = req.session.user
-    //NEED TO ASSIGN USERS_ID TO SENDER//
-    console.log('before create_message')
-    const db = app.get("db");
-    await db.chat.create_message({ chat_id: +room, message, users_id: sender });
-    console.log("message", message);
-    console.log('room', +room)
-    // why are you sending all messages here?  Should you just send the message we are hanlding in this call? 
-    // let messages = await db.chat.get_chat_history({
-    //   chat_id: +room,
-    //   users_id
-    // });
-    io.to(+room).emit("message dispatched", {chat_id: +room, users_message: message, sender});
-    console.log('ending send mess')
-  });
-  socket.on("disconnect", x => {
-    console.log("User Disconnected", x);
-  });
-});
+app.use(express.json());
+app.use(express.static(`${__dirname}/../build`));
+// io = socket(
+//   app.listen(SERVER_PORT, () =>
+//     console.log(gradient.fruit(`Server running on port ${SERVER_PORT}`))
+//   )
+// );
+// app.use(
+//   session({
+//     resave: false,
+//     saveUninitialized: true,
+//     secret: SESSION_SECRET,
+//     cookie: {
+//       maxAge: 1000 * 60 * 60 * 24 * 30
+//     }
+//   })
+// );
+// //=========== AMAZON S3 =========== //
+// app.get("/sign-s3", (req, res) => {
+//   aws.config = {
+//     region: "us-west-1",
+//     accessKeyId: AWS_ACCESS_KEY_ID,
+//     secretAccessKey: AWS_SECRET_ACCESS_KEY
+//   };
+//   const s3 = new aws.S3();
+//   const fileName = req.query["file-name"];
+//   const fileType = req.query["file-type"];
+//   const s3Params = {
+//     Bucket: S3_BUCKET,
+//     Key: fileName,
+//     Expires: 60,
+//     ContentType: fileType,
+//     ACL: "public-read"
+//   };
+//   s3.getSignedUrl("putObject", s3Params, (err, data) => {
+//     if (err) {
+//       console.log(err);
+//       return res.end();
+//     }
+//     const returnData = {
+//       signedRequest: data,
+//       url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
+//     };
+//     return res.send(returnData);
+//   });
+// });
+// // ============= S3 END =============== //
+// // ========= SOCKET.IO START ========== //
+// // REGULAR ENDPOINTS HERE
+// app.get("/api/example", (req, res, next) => {
+//   res.status(200).send("hello");
+// });
+// io.on("connection", socket => {
+//   console.log("User Connected");
+//   socket.on("join room", async data => {
+//     console.log("join room", data);
+//     const { room } = data;
+//     const db = app.get("db");
+//     console.log("Room joined", room);
+//     let existingRoom = await db.chat.check_match(+room);
+//     // HOW DO I CREATE ROOM FROM MATCH? //
+//     // !existingRoom.length ? db.chat.create_room({ match_id: +room }) : null;
+//     let messages = await db.chat.get_chat_history( +room);
+//     socket.join(+room);
+//     console.log(room);
+//     io.to(+room).emit("room joined", messages);
+//   });
+//   socket.on("message sent", async data => {
+//     console.log("message sent", data);
+//     //USER_ID IS SENDER//
+//     const { room, message, sender} = data;
+//     //destructure and put proper values in and it should work
+//     // console.log('Room', room)
+//     // const db = req.app.get('db')
+//     // const {users_id} = req.session.user
+//     //NEED TO ASSIGN USERS_ID TO SENDER//
+//     console.log('before create_message')
+//     const db = app.get("db");
+//     await db.chat.create_message({ chat_id: +room, message, users_id: sender });
+//     console.log("message", message);
+//     console.log('room', +room)
+//     // why are you sending all messages here?  Should you just send the message we are hanlding in this call?
+//     // let messages = await db.chat.get_chat_history({
+//     //   chat_id: +room,
+//     //   users_id
+//     // });
+//     io.to(+room).emit("message dispatched", {chat_id: +room, users_message: message, sender});
+//     console.log('ending send mess')
+//   });
+//   socket.on("disconnect", x => {
+//     console.log("User Disconnected", x);
+//   });
+// });
 // ========= SOCKET.IO END ========== //
 
-massive(CONNECTION_STRING).then(db => {
+massive(CONNECTION_STRING).then((db) => {
   app.set("db", db);
   console.log(gradient.summer("db is super connected"));
 });
@@ -137,6 +137,9 @@ app.get("/api/potentials", profileCtrl.getPotentialsByZip);
 app.post("/api/addMatchInterest", profileCtrl.addMatchInterest);
 // === === MATCH === === //
 app.get("/api/matches", matchCtrl.getMatches);
-app.get("/api/currentReceiver/:users_id", matchCtrl.getCurrentReceiver)
+app.get("/api/currentReceiver/:users_id", matchCtrl.getCurrentReceiver);
 app.get("/api/chats/:chat_id", matchCtrl.getChats);
 // const port = 4040;
+
+const port = SERVER_PORT || 5000;
+app.listen(port, () => console.log(`Server running on port ${port}`));
